@@ -1,0 +1,23 @@
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-cadeado {
+    height: auto;
+    width: 150px;
+}
+
+.img-chave {
+    height: auto;
+    width: 80px;
+    display: block;
+    margin-left: 30px;
+}
+
+.pagina {
+    margin-top: 30px;
+    text-align: center;
+}
