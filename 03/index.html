@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Pedra papel tesoura</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="../jquery-3.7.1.min.js"></script>
+    </head>
+
+    <body>
+        <div class="pagina">
+
+            <div class="jogo">
+ 
+                <div class="jogo-me">
+                    <p>Sua escolha: </p>
+                    <img class="img-pedra" id="pedra" src="../img/pedra.png">
+                    <img class="img-papel" id="papel" src="../img/papel.png">
+                    <img class="img-tesoura" id="tesoura" src="../img/tesoura.png">
+                </div>
+                <div class="jogo-pc">
+                    <p>Escolha do computador: </p>
+                    <img class="img-wait" id="computador-wait" src="../img/reticencias.png"> 
+                    <img class="img-computador-jogou" id="computador-jogou" src="../img/pedra.png">
+                    <img class="img-computador" id="computador" src="../img/pc_empate.png">
+                </div>  
+            </div>
+
+            <div class="resultado">
+                <div class="vencedor"><p id="texto-vencedor" class="texto-vencedor">Empate!</p></div>
+
+                <span>Placar:</span>
+                <table class="pontuacao" id="tabela-pontuacao">
+                    <tr>
+                        <th>Eu</th>
+                        <th>Computador</th>
+                        <th>Empate</th>
+                    </tr>
+                    <tr>
+                        <td id="pontos-eu">0</td>
+                        <td id="pontos-pc">0</td>
+                        <td id="pontos-empate">0</td>
+                    </tr>
+                </table>
+                <div class="resultado-botao">
+                    <button class="botao-recarrega" id="recarrega">Reiniciar jogo</button>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>
+
+<script src="script.js"></script>

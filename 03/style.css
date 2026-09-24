@@ -1,0 +1,129 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    margin: 0;
+    padding: 0;
+    height: auto;
+}
+
+.pagina {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.pagina img {
+    height: auto;
+    width: 90px;
+}
+
+.botao-recarrega {
+    border-radius: 2px;
+    border-collapse: collapse;
+    background-color: rgb(39, 23, 179);
+    color: white;
+    font-size: 10px;
+}
+
+.botao-recarrega:hover {
+    background-color: rgb(22, 10, 136);
+    transform: scale(1.1);
+}
+
+.jogo {
+    padding: 5px;
+    width: 600px;
+    display: flex;
+}
+
+.jogo p {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.vencedor{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+
+.texto-vencedor{
+    display: none;
+    font-weight: bold;
+    color: red;
+    font-size: 15px;
+}
+
+.jogo-me {
+    width: 50%;
+    border: 1px solid lightgray;
+    padding-left: 7px;
+    padding-bottom: 5px;
+}
+
+.jogo-pc {
+    width: 50%;
+    display: grid;
+    align-items: center;
+    margin-left: 10px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border: 1px solid lightgray;
+}
+
+.jogo-pc img {
+    height: auto;
+    width: 200px;
+}
+
+.img-computador{
+    display: none;
+}
+
+.img-computador-jogou {
+    width: 30px;
+}
+
+.img-pedra:hover,
+.img-papel:hover,
+.img-tesoura:hover {
+    transform: scale(1.1);
+}
+
+.resultado {
+    padding: 5px;
+    font-size: 8px;
+    display: grid;
+    width: 600px;
+}
+
+.resultado-botao {
+    padding-top: 5px;
+}
+
+.pontuacao {
+    width: 80%;
+    font-size: 10px;
+    border: 1px solid gray;
+}
+
+.pontuacao th {
+    background-color: rgb(224, 224, 224);
+}
+
+.pontuacao td {
+    width: 33.33%;
+    background-color: rgb(248, 247, 247);
+    text-align: center;
+}
+
+.resultado span {
+    font-size: 12px;
+}
+
