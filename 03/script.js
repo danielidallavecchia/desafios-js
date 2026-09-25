@@ -37,10 +37,6 @@ function pcJoga() {
     return respostas[indiceAleatorio];
 };
 
-function mostraJogadaPc(escolhaPc) {
-
-};
-
 function euJogo() {
     const pedra = document.getElementById("pedra");
     const papel = document.getElementById("papel");
@@ -56,9 +52,11 @@ function atualizarPontos() {
     const pontosPc = document.getElementById("pontos-pc");
     const pontosEmpate = document.getElementById("pontos-empate");
 
-    pontosEu.textContent = placarEu;
-    pontosPc.textContent = placarPc;
-    pontosEmpate.textContent = placarEmpate;
+    setTimeout(() => {
+        pontosEu.textContent = placarEu;
+        pontosPc.textContent = placarPc;
+        pontosEmpate.textContent = placarEmpate;
+    }, 1500);
 };
 
 function mudaTextoVencedor(tipo) {
@@ -94,47 +92,60 @@ function mudaImgPc(tipo) {
     $imgPc.show();
 }
 
-// TODO: mudar imagem da jogada e dps alinhá-la com o imagem do pc
-function mudaJogadaPc(jogada) {
+function mudaJogadaPc(escolhaPc) {
     var $imgPcJogou = $("#computador-jogou");
 
-    if (jogada === "pedra") {
-        $imgPc.attr("src", "../img/pedra.png");
-    } else if (jogada === "papel") {
-        $imgPc.attr("src", "../img/papel.png");
-    } else if (jogada === "tesoura") {
-        $imgPc.attr("src", "../img/tesoura.png");
+    if (escolhaPc === "pedra") {
+        $imgPcJogou.attr("src", "../img/pedra.png");
+    } else if (escolhaPc === "papel") {
+        $imgPcJogou.attr("src", "../img/papel.png");
+    } else if (escolhaPc === "tesoura") {
+        $imgPcJogou.attr("src", "../img/tesoura.png");
     }
     
-    $imgPc.show();
+    $imgPcJogou.show();
 }
 
-function alteraItemsByResultado(tipo) {
-    mudaTextoVencedor(tipo);
-    mudaImgPc(tipo);
+function alteraItemsByResultado(tipo, escolhaPc) {
+    var $imgWait = $("#computador-wait");
+    var $imgPc = $("#computador");
+    var $imgPcJogou = $("#computador-jogou");
+
+    $imgPc.hide();
+    $imgPcJogou.hide();
+    $imgWait.show();
+
+    setTimeout(() => {
+        mudaTextoVencedor(tipo);
+        mudaImgPc(tipo);
+        mudaJogadaPc(escolhaPc);
+    }, 1000);
+     
 }
 
 function jogar(escolhaUsuario) {
     var escolhaPc = pcJoga();
 
+    var pcWait = document.getElementById("computador-wait"); 
+    pcWait.src = "../img/computador_pensando.png";
+
     console.log("escolhaUsuario = ", escolhaUsuario);
     console.log("escolhaPc = ", escolhaPc);
 
-    mostraJogadaPc(escolhaPc);
 
     if(escolhaUsuario === escolhaPc) {
         placarEmpate++;
-        alteraItemsByResultado("empate");
+        alteraItemsByResultado("empate", escolhaPc);
     } else if (
         (escolhaUsuario === "pedra" && escolhaPc === "tesoura") ||
         (escolhaUsuario === "papel" && escolhaPc === "pedra") ||
         (escolhaUsuario === "tesoura" && escolhaPc === "papel")
     ) {
         placarEu++;
-        alteraItemsByResultado("eu");
+        alteraItemsByResultado("eu", escolhaPc);
     } else {
         placarPc++;
-        alteraItemsByResultado("pc");
+        alteraItemsByResultado("pc", escolhaPc);
     }
 
     atualizarPontos();

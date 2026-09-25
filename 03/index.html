@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>Pedra papel tesoura</title>
         <link rel="stylesheet" href="style.css">
         <script src="../jquery-3.7.1.min.js"></script>
@@ -14,20 +15,24 @@
  
                 <div class="jogo-me">
                     <p>Sua escolha: </p>
-                    <img class="img-pedra" id="pedra" src="../img/pedra.png">
-                    <img class="img-papel" id="papel" src="../img/papel.png">
-                    <img class="img-tesoura" id="tesoura" src="../img/tesoura.png">
+                    <div class="escolha-me">
+                        <img class="img-pedra" id="pedra" src="../img/pedra.png">
+                        <img class="img-papel" id="papel" src="../img/papel.png">
+                        <img class="img-tesoura" id="tesoura" src="../img/tesoura.png">
+                    </div> 
                 </div>
                 <div class="jogo-pc">
                     <p>Escolha do computador: </p>
-                    <img class="img-wait" id="computador-wait" src="../img/reticencias.png"> 
-                    <img class="img-computador-jogou" id="computador-jogou" src="../img/pedra.png">
-                    <img class="img-computador" id="computador" src="../img/pc_empate.png">
+                    <div class="escolha-computador">
+                        <img class="img-wait" id="computador-wait" src="../img/reticencias.png"> 
+                        <img class="img-computador" id="computador" src="../img/pc_empate.png">
+                        <img class="img-computador-jogou" id="computador-jogou" src="../img/pedra.png"></imgclass>
+                    </div>
                 </div>  
             </div>
 
             <div class="resultado">
-                <div class="vencedor"><p id="texto-vencedor" class="texto-vencedor">Empate!</p></div>
+                <div class="vencedor"><p id="texto-vencedor" class="texto-vencedor"></p></div>
 
                 <span>Placar:</span>
                 <table class="pontuacao" id="tabela-pontuacao">

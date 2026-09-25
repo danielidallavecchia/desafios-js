@@ -15,7 +15,7 @@ header {
     display: grid;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 90vh;
 }
 
 .pagina img {
@@ -39,6 +39,7 @@ header {
 .jogo {
     padding: 5px;
     width: 600px;
+    height: 250px;
     display: flex;
 }
 
@@ -50,7 +51,6 @@ header {
 .vencedor{
     display: flex;
     justify-content: center;
-    padding-bottom: 40px;
 }
 
 .texto-vencedor{
@@ -64,30 +64,53 @@ header {
     width: 50%;
     border: 1px solid lightgray;
     padding-left: 7px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
+    display: grid;
+    align-items: center;
+    text-align: center;
+}
+
+.escolha-me {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 30px;
+    padding-bottom: 20px;
 }
 
 .jogo-pc {
     width: 50%;
     display: grid;
     align-items: center;
+    text-align: center;
     margin-left: 10px;
     padding-left: 10px;
     padding-bottom: 5px;
     border: 1px solid lightgray;
 }
 
-.jogo-pc img {
-    height: auto;
-    width: 200px;
+.escolha-computador {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 30px;
+    padding-bottom: 20px;
 }
 
-.img-computador{
+.img-wait{
+    height: 150px !important;
+    width: 180px !important;
+}
+
+.img-computador {
     display: none;
+    width: 140px !important;
 }
 
 .img-computador-jogou {
-    width: 30px;
+    display: none;
+    width: 60px !important;
+    height: 120px !important;
 }
 
 .img-pedra:hover,
