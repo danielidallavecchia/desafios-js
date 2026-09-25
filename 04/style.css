@@ -1,0 +1,166 @@
+
+html, body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: lightgray;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    margin: 0;
+    height: auto;
+}
+
+.cabeca {
+    display: flex;
+    height: auto;
+    width: auto;
+    margin-top: 5px;
+}
+
+.botao-abastecer {
+    display: block;
+    margin-left: 5px;
+    height: 25px;
+    width: 70px;
+    font-size: 9px;
+    background-color: rgb(5, 148, 5);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.botao-abastecer:hover {
+    background-color: rgb(3, 107, 3);
+}
+
+.botao-consertar {
+    display: block;
+    margin-left: 5px;
+    height: 25px;
+    width: 70px;
+    font-size: 9px;
+    background-color: rgb(5, 148, 5);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.botao-consertar:hover {
+    background-color: rgb(3, 107, 3);
+}
+
+.botao-turbo {
+    display: block;
+    margin-left: 5px;
+    height: 25px;
+    width: 70px;
+    font-size: 9px;
+    background-color: rgb(5, 148, 5);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.botao-turbo:hover {
+    background-color: rgb(3, 107, 3);
+}
+
+.botao-turbo-on {
+    margin-left: 5px;
+    height: 25px;
+    width: 70px;
+    font-size: 9px;
+    background-color: rgb(182, 14, 14);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.botao-turbo-on:hover {
+    background-color: darkred;
+}
+
+.texto-turbo {
+    display: none;
+    font-size: 8px;
+    margin-left: 5px;
+}
+.texto-ativo {
+    color: red;
+    text-decoration: underline;
+}
+
+.jogo {
+    display: grid;
+    justify-content: center;
+}
+
+.pagina {
+    grid-template-rows: 1fr 10%;
+    justify-content: space-between;
+    position: relative;
+    height: 400px;
+    width: 970px;
+    box-sizing: border-box;
+    border: 2px solid black;
+    margin-top: 3px;
+}
+
+.carro {
+    position: absolute;
+    width: 180px !important;
+    height: auto;
+    border: none !important;
+    top: 150px;
+    left: 400px;
+    rotate: 0deg;
+    transform: scaleX(1);
+}
+
+.gasolina {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 10px;
+    padding-top: 10px;
+}
+
+.fundo-barra {
+    width: 250px;
+    height: 10px;
+    background-color: gray;
+    border: 2px solid black;
+    border-radius: 5px;
+    position: relative;
+}
+
+.barra {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(17, 203, 54);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.alerta-ok {
+  padding: 1rem !important;     
+  font-size: 0.85rem !important;
+  max-height: 300px !important;  
+  width: 400px !important;
+  background-color: rgb(231, 245, 250);
+  justify-content: center;
+}
+.alerta-gasolina {
+  padding: 1rem !important;     
+  font-size: 0.85rem !important;
+  max-height: 300px !important;  
+  width: 400px !important;
+  background-color: rgb(212, 215, 251);
+}
+.alerta-batida {
+  padding: 1rem !important;     
+  font-size: 0.85rem !important;
+  max-height: 300px !important;  
+  width: 400px !important;
+  background-color:  rgb(250, 222, 222); 
+}
