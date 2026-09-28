@@ -85,7 +85,7 @@ header {
 .pagina {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     flex: 1;
     box-sizing: border-box;
 }
