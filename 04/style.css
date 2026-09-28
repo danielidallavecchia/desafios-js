@@ -56,8 +56,8 @@ header {
 .botao-turbo-on {
     margin-left: 5px;
     height: 25px;
-    width: 70px;
-    font-size: 9px;
+    width: 80px;
+    font-size: 12px;
     background-color: rgb(182, 14, 14);
     color: white;
     font-weight: bold;
@@ -69,7 +69,7 @@ header {
 
 .texto-turbo {
     display: none;
-    font-size: 8px;
+    font-size: 10px;
     margin-left: 5px;
 }
 .texto-ativo {

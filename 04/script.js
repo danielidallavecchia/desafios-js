@@ -239,7 +239,7 @@ document.getElementById("botao-abastecer").addEventListener("click", function(ev
             confirmButtonText: "Ok"
         });
     } else {
-        gasolinaAtual = 130;
+        gasolinaAtual = 100;
         $("#barra").css("width", "100%");
     }    
 });
