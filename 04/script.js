@@ -12,7 +12,18 @@ var pixels = 10;
 var quebrado = false;
 
 window.addEventListener('keydown', (event) => {
-    if(quebrado) return;
+    if(quebrado) {
+        Swal.fire({
+            title: "Conserte seu carro",
+            text: "É preciso consertar antes de andar novamente",
+            icon: "error",
+            customClass: {
+                popup: "alerta-batida"
+            },
+            confirmButtonText: "Ok"
+        });
+        return
+    };
 
     var topo = parseInt($carro.css("top")) || 0;
     var left = parseInt($carro.css("left")) || 0;
@@ -48,7 +59,25 @@ window.addEventListener('keydown', (event) => {
             break;
     }   
 
-    if ( left<=0 || left>=limiteMaximoX || topo<=0 || topo>=limiteMaximoY) {
+    if (left < 0) {
+        left = 0;
+    }
+    if (left > limiteMaximoX) {
+        left = limiteMaximoX;
+    }
+    if (topo < 0) {
+        topo = 0;
+    }
+    if (topo > limiteMaximoY) {
+        topo = limiteMaximoY;
+    }
+
+    if (left===0 || left===limiteMaximoX || topo===0 || topo===limiteMaximoY) {
+        $carro.css("left", left + "px");
+        $carro.css("top", topo + "px");
+        $carro.css("rotate", rotacao);
+        $carro.css("transform", virar);
+
         batida();
         return;
     }
