@@ -7,7 +7,7 @@ var gasto = 1;
 var velocidade = 1;
 
 var $carro = $("#carro");
-var $pag = $(".pagina");
+var $pag = $("#corpo");
 
 var inicioX = ($pag.width() - $carro.outerWidth()) / 2;
 var inicioY = ($pag.height() - $carro.outerHeight()) / 2;
@@ -19,103 +19,152 @@ var pixels = 10;
 
 var quebrado = false;
 
+var rotacao = 0;
+var direcao = "direita";
+var espelho = 1;
+
 window.addEventListener('keydown', (event) => {
     if(quebrado) {;
         return
     };
 
-    var topo = parseInt($carro.css("top")) || 0;
-    var left = parseInt($carro.css("left")) || 0;
-    var rotacao = "0";
-    var virar = "1";
+    var topoAtual = parseInt($carro.css("top")) || 0;
+    var leftAtual = parseInt($carro.css("left")) || 0;
 
-    switch(event.key) {
-        case "ArrowUp":
-            topo -= pixels*velocidade;
-            rotacao = "270deg";
-            atualizarGasolina();
-            break;
-        case "ArrowDown":
-            topo += pixels*velocidade;
-            rotacao = "90deg";
-            atualizarGasolina();
-            break;
-        case "ArrowLeft":
-            left -= pixels*velocidade;
-            rotacao = "0deg";
-            virar = "scaleX(-1)";
-            atualizarGasolina();
-            break;
-        case "ArrowRight":
-            left += pixels*velocidade;
-            rotacao = "0deg";
-            virar = "scaleX(1)";
-            atualizarGasolina();
-            break;
-    }   
+    var leftProximo=leftAtual;
+    var topoProximo=topoAtual;
 
-    var $pagina = $(".pagina");
-    // var limiteMaximoX = $pagina.width() - $carro.outerWidth();
-    // var limiteMaximoY = $pagina.height() - $carro.outerHeight();
+    if (event.key === "ArrowUp") {
+        topoProximo -= pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao -= 90;
+        } else if (direcao === "cima") {
+            // mantém
+        } else if (direcao === "esquerda") {
+            rotacao += 90;
+        } else if (direcao === "baixo") {
+            rotacao -= 0;
+            if (espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        }
+
+        direcao = "cima";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowDown") {
+        topoProximo += pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao += 90;
+        } else if (direcao === "cima") {
+            rotacao += 0;
+            if (espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        } else if (direcao === "esquerda") {
+            rotacao -= 90;
+        } else if (direcao === "baixo") {
+            // mantém
+        }
+
+        direcao = "baixo";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowLeft") {
+        leftProximo -= pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao += 0;
+            if(espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        } else if (direcao === "cima") {
+            rotacao -= 90;
+        } else if (direcao === "esquerda") {
+            // mantém
+        } else if (direcao === "baixo") {
+            rotacao += 90;
+        }
+
+        direcao = "esquerda";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowRight") {
+        leftProximo += pixels * velocidade;
+
+        if (direcao === "direita") {
+            // mantém
+        } else if (direcao === "cima") {
+            rotacao += 90;
+        } else if (direcao === "esquerda") {
+            rotacao += 0;
+            if(espelho === -1) {
+                espelho = 1;
+            } else {
+                espelho = -1;
+            }
+        } else if (direcao === "baixo") {
+            rotacao -= 90;
+        }
+
+        direcao = "direita";
+        atualizarGasolina();
+
+    } 
+
+    var $pagina = $("#corpo");
 
     var larguraCarro = $carro.outerWidth();
     var alturaCarro = $carro.outerHeight();
 
-    if (rotacao === "90deg" || rotacao === "270deg") {
+    if (rotacao===90 || rotacao===-90) {
         var temp = larguraCarro;
         larguraCarro = alturaCarro;
         alturaCarro = temp;
     }
 
-    var ajusteX = (larguraCarro - $carro.outerWidth()) / 2;
-    var ajusteY = (alturaCarro - $carro.outerHeight()) / 2;
+    var ajusteX = (larguraCarro - $carro.width()) / 2;
+    var ajusteY = (alturaCarro - $carro.height()) / 2;
 
     var limiteMinimoX = ajusteX;
-    var limiteMaximoX = $pagina.width() - $carro.outerWidth() - ajusteX;
-
+    var limiteMaximoX = $pagina.width() - $carro.width() - ajusteX;
     var limiteMinimoY = ajusteY;
-    var limiteMaximoY = $pagina.height() - $carro.outerHeight() - ajusteY;
+    var limiteMaximoY = $pagina.height() - $carro.height() - ajusteY;
 
-    if (left < limiteMinimoX) {
-        left = limiteMinimoX;
+    if (leftProximo < limiteMinimoX) {
+        leftProximo = limiteMinimoX;
+    } else if (leftProximo > limiteMaximoX) {
+        leftProximo = limiteMaximoX;
     }
-    if (left > limiteMaximoX) {
-        left = limiteMaximoX;
-    }
-    if (topo < limiteMinimoY) {
-        topo = limiteMinimoY;
-    }
-    if (topo > limiteMaximoY) {
-        topo = limiteMaximoY;
+    
+    if (topoProximo < limiteMinimoY) {
+        topoProximo = limiteMinimoY;
+    } else if (topoProximo > limiteMaximoY) {
+        topoProximo = limiteMaximoY;
     }
 
-    // if (left < 0) {
-    //     left = 0;
-    // }
-    // if (left > limiteMaximoX) {
-    //     left = limiteMaximoX;
-    // }
-    // if (topo < 0) {
-    //     topo = 0;
-    // }
-    // if (topo > limiteMaximoY) {
-    //     topo = limiteMaximoY;
-    // }
-
-    if (left===limiteMinimoX || left===limiteMaximoX || topo===limiteMinimoY || topo===limiteMaximoY) {
-        $carro.css("left", left + "px");
-        $carro.css("top", topo + "px");
+    if (leftProximo===limiteMinimoX || leftProximo===limiteMaximoX 
+        || topoProximo===limiteMinimoY || topoProximo===limiteMaximoY) {
+        $carro.css("left", leftProximo + "px");
+        $carro.css("top", topoProximo + "px");
         $carro.css("rotate", rotacao);
-        $carro.css("transform", virar);
 
         batida();
         return;
     }
 
-    $carro.css("left", left + "px");
-    $carro.css("top", topo + "px");
-    $carro.css("rotate", rotacao);
-    $carro.css("transform", virar);
+    $carro.css("left", leftProximo + "px");
+    $carro.css("top", topoProximo + "px");
+    $carro.css("transform", "rotate(" + rotacao + "deg) scaleX(" + espelho + ")");
+
 });
 
 var modoTurbo = false;
@@ -159,6 +208,7 @@ function atualizarGasolina() {
     }
 
     var nova = (gasolinaAtual / gasolinaMax) * 100;
+    $("#barra").css("width", nova + "%");
 
     if(nova === 0 && !quebrado) {
         Swal.fire({
@@ -173,8 +223,6 @@ function atualizarGasolina() {
             resetaPagina();
         });
     }
-
-    $("#barra").css("width", nova + "%");
 }
 
 document.getElementById("botao-abastecer").addEventListener("click", function(event) {
@@ -201,15 +249,23 @@ function batida() {
     $carro = $("#carro");
     $carro.attr("src", "../img/landau_batido.png");
 
-    Swal.fire({
-        title: "Acidente",
-        text: "Você bateu na borda!",
-        icon: "error",
-        customClass: {
-            popup: "alerta-batida"
-        },
-        confirmButtonText: "Ok"
-    }).then((result) => {
-        resetaPagina();
-    });
+    setTimeout(() => {
+        Swal.fire({
+            title: "Acidente",
+            text: "Você bateu na borda!",
+            icon: "error",
+            customClass: {
+                popup: "alerta-batida"
+            },
+            confirmButtonText: "Ok"
+        }).then((result) => {
+            resetaPagina();
+        });
+    }, 500);
+
+    
 }
+
+document.getElementById("botao-reiniciar").addEventListener("click", function(event) {
+    resetaPagina();
+});
