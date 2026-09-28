@@ -9,8 +9,8 @@ var velocidade = 1;
 var $carro = $("#carro");
 var $pag = $("#corpo");
 
-var inicioX = ($pag.width() - $carro.outerWidth()) / 2;
-var inicioY = ($pag.height() - $carro.outerHeight()) / 2;
+var inicioX = ($pag.width() - $carro.width()) / 2;
+var inicioY = ($pag.height() - $carro.height()) / 2;
 
 $carro.css("left", inicioX + "px");
 $carro.css("top", inicioY + "px");
@@ -262,8 +262,6 @@ function batida() {
             resetaPagina();
         });
     }, 500);
-
-    
 }
 
 document.getElementById("botao-reiniciar").addEventListener("click", function(event) {
