@@ -23,8 +23,6 @@ window.addEventListener('keydown', (event) => {
     var limiteMaximoX = $pagina.width() - $carro.outerWidth();
     var limiteMaximoY = $pagina.height() - $carro.outerHeight();
 
-    batida(left, topo, limiteMaximoX, limiteMaximoY);
-
     switch(event.key) {
         case "ArrowUp":
             topo -= pixels*velocidade;
@@ -50,15 +48,15 @@ window.addEventListener('keydown', (event) => {
             break;
     }   
 
-    var leftFinal = Math.max(0, Math.min(left, limiteMaximoX));
-    var topoFinal = Math.max(0, Math.min(topo, limiteMaximoY));
+    if ( left<=0 || left>=limiteMaximoX || topo<=0 || topo>=limiteMaximoY) {
+        batida();
+        return;
+    }
 
-    $carro.css("left", leftFinal + "px");
-    $carro.css("top", topoFinal + "px");
+    $carro.css("left", left + "px");
+    $carro.css("top", topo + "px");
     $carro.css("rotate", rotacao);
     $carro.css("transform", virar);
-
-    event.preventDefault();
 });
 
 var modoTurbo = false;
@@ -123,7 +121,7 @@ function atualizarGasolina() {
 document.getElementById("botao-abastecer").addEventListener("click", function(event) {
     if(quebrado) return;
 
-    if(gasolinaAtual == 100) {
+    if(gasolinaAtual === 100) {
         Swal.fire({
             title: "Gasolina cheia",
             text: "Seu tanque já está cheio!",
@@ -139,28 +137,20 @@ document.getElementById("botao-abastecer").addEventListener("click", function(ev
     }    
 });
 
-function batida(posicaoX, posicaoY, limiteMaximoX, limiteMaximoY) {
-    var batida = false;
+function batida() {
+    quebrado = true;
+    $carro = $("#carro");
+    $carro.attr("src", "../img/landau_batido.png");
 
-    if ((posicaoX <= 0) || (posicaoX >= limiteMaximoX) || (posicaoY <= 0) || (posicaoY >= limiteMaximoY)) {
-        batida = true;
-    }
-
-    if (batida) {
-        quebrado = true;
-        $carro = $("#carro");
-        $carro.attr("src", "../img/landau_batido.png");
-
-        Swal.fire({
-            title: "Acidente",
-            text: "Você bateu na borda!",
-            icon: "error",
-            customClass: {
-                popup: "alerta-batida"
-            },
-            confirmButtonText: "Ok"
-        });
-    }
+    Swal.fire({
+        title: "Acidente",
+        text: "Você bateu na borda!",
+        icon: "error",
+        customClass: {
+            popup: "alerta-batida"
+        },
+        confirmButtonText: "Ok"
+    });
 }
 
 document.getElementById("botao-consertar").addEventListener("click", function(event) {
