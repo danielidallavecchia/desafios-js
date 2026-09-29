@@ -9,20 +9,25 @@ var velocidade = 1;
 var $carro = $("#carro");
 var $pag = $("#corpo");
 
+// centraliza o carro no meio da tela
 var inicioX = ($pag.width() - $carro.width()) / 2;
 var inicioY = ($pag.height() - $carro.height()) / 2;
 
 $carro.css("left", inicioX + "px");
 $carro.css("top", inicioY + "px");
 
+// qtd de px para avançar
 var pixels = 10;
 
+// estado do carro
 var quebrado = false;
 
-var rotacao = 0;
-var direcao = "direita";
-var espelho = 1;
+// variáveis usadas na rotação do carro
+var rotacao = 0; // em graus
+var direcao = "direita"; // ultima direção
+var espelho = 1; // 1 (mantém) ou -1 (inverte) no scaleX do css
 
+// Processa cada tecla pressionada
 window.addEventListener('keydown', (event) => {
     if(quebrado) {;
         return
@@ -167,6 +172,7 @@ window.addEventListener('keydown', (event) => {
 
 });
 
+// Processa modo turbo (aumenta velocidade mas gasta mais gasolina)
 var modoTurbo = false;
 
 document.getElementById("botao-turbo").addEventListener("click", function(event) {
@@ -198,6 +204,7 @@ function resetaPagina() {
 
 var gasolinaMax = 100;
 
+// Atualiza a gasolina do carro
 function atualizarGasolina() {
     if(gasolinaAtual > 100) gasolinaAtual = 100;
 
@@ -225,6 +232,7 @@ function atualizarGasolina() {
     }
 }
 
+// Processa o "abastecimento" (enche a gasolina mantendo a posição)
 document.getElementById("botao-abastecer").addEventListener("click", function(event) {
     if(quebrado) return;
 
@@ -244,6 +252,7 @@ document.getElementById("botao-abastecer").addEventListener("click", function(ev
     }    
 });
 
+// Processa a batida do carro na borda
 function batida() {
     quebrado = true;
     $carro = $("#carro");
@@ -264,6 +273,7 @@ function batida() {
     }, 500);
 }
 
+// Botão reiniciar recarrega a página
 document.getElementById("botao-reiniciar").addEventListener("click", function(event) {
     resetaPagina();
 });
