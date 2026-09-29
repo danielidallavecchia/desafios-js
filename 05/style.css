@@ -39,7 +39,7 @@ html, body {
 }
 
 .resposta {    
-    display: flex;
+    display: grid;
     align-items: flex-end;  
     justify-content: flex-end;
     padding: 20px;
@@ -50,12 +50,23 @@ html, body {
     font-family: "Times New Roman";
 }
 
+.resposta-err {
+    font-size: 15px;
+    height: 4%;
+    text-align: right;
+    color: white;
+}
+.msg-erro {
+    display: none;
+    padding-right: 10px;
+}
+
 .teclado {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 8px;
     padding: 5px 10px 0px 15px;
-    height: 55%;
+    height: 53%;
     justify-content: center;
     align-items: center;
 }

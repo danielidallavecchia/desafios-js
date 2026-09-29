@@ -2,6 +2,7 @@
 var valorAtual = ""; 
 var $resposta = $("#resposta");
 var ehResultado = false;
+var temErro = false; // true enquanto houver mensagem no #msg-erro
 
 var operadores = ["%", "÷", "x", "-", "+"];
 
@@ -26,18 +27,23 @@ function ajustaFonte() {
     $resposta.css("font-size", tamanho);
 }
 
-function disparaAlerta(titulo, texto){
-    Swal.fire({
-        title: titulo,
-        text: texto,
-        icon: "warning",
-        confirmButtonText: "Ok"
-    });
+function mostraErro(texto) {
+    temErro = true;
+    var $msgErro = $("#msg-erro");
+    $msgErro.css("display", "block");
+    $msgErro.text(texto);
+}
+
+function limpaErro() {
+    temErro = false;
+    var $msgErro = $("#msg-erro");
+    $msgErro.css("display", "none");
+    $msgErro.text("Expressão mal formatada");
 }
 
 function limitaTamanho() {
     if(!ehResultado && valorAtual.length > 15) {
-        disparaAlerta("Valor inválido", "Máximo permitido são 15 caracteres");
+        mostraErro("Máximo permitido são 15 caracteres");
     }
     if(valorAtual.length > 15) {
         valorAtual = valorAtual.slice(0,15);
@@ -76,25 +82,54 @@ function limpar(tecla) {
     } else if(tecla === "C") {
         resultado = resultado.slice(0, -1); // remove ultimo elemento
     }
+
+    if(temErro) {
+        resultado = "0";
+    }
+
+    limpaErro();
+
     return resultado;
 }
 
+function validaUltimoDigito(expressao) {
+    if(valorAtual==="" || valorAtual==="0") {
+        return true;
+    }
+
+    var ultimo = expressao.slice(-1);
+    var invalidoNoFim = [".", "÷", "x", "-", "+"];
+
+    if (invalidoNoFim.includes(ultimo)) {
+        mostraErro("Expressão mal formatada");
+        return false;
+    }
+    return true;
+}
+
 function calcular() {
+    if(valorAtual==="" || valorAtual==="0") {
+        return valorAtual;
+    }
+
+    if(!validaUltimoDigito(valorAtual)) {
+        return valorAtual; // não sobrescreve
+    }
+
     var expressao = valorAtual.replace(/x/g, "*");
     expressao = expressao.replace(/÷/g, "/");
     expressao = expressao.replace(/[%÷x\-+]$/, "");
 
-    var calculo = eval(expressao) || 0;
+    var calculo=0;
 
-    // calculo = String(calculo);
-    // // remove zeros a direita após o ponto decimal
-    // if(ehResultado && calculo.includes(".")) {
-    //     calculo = calculo.replace(/0+$/, ""); // tira zeros no final
-    //     calculo = calculo.replace(/\.$/, ""); // tira o ponto se sobrar sozinho
-    // }
-
-    // padroniza decimal com 12 casas e no parse remove zeros a direita após o ponto
-    return String(parseFloat(calculo.toPrecision(12))); 
+    try {
+        calculo = eval(expressao);   
+        // padroniza decimal com 12 casas e no parse remove zeros a direita após o ponto
+        return String(parseFloat(calculo.toPrecision(12)));
+    } catch (erro) {
+        mostraErro("Expressão mal formatada");
+        return valorAtual;
+    }
 }
 
 function ehInicio() {
@@ -102,9 +137,13 @@ function ehInicio() {
 }
 
 function validaPrimeiraTecla(tecla) {
+    if(valorAtual==="" || valorAtual==="0") {
+        return true;
+    }
+
     var invalidoNoInicio = ["%", "÷", "x", "="];
     if (ehInicio() && invalidoNoInicio.includes(tecla)) {
-        disparaAlerta("Operação inválida", "Digite um número antes de usar '" + tecla + "'");
+        mostraErro("Expressão mal formatada");
         return false;
     }
     return true;
@@ -113,9 +152,17 @@ function validaPrimeiraTecla(tecla) {
 function executaCalculadora() {
     
     $(".tecla").click(function() {
+        temErro = false;
+        limpaErro();
+
         var tecla = $(this).text();
 
         if (!validaPrimeiraTecla(tecla)) {
+            return;
+        }
+
+        // não permite ponto logo após outro ponto
+        if (tecla === "." && valorAtual.slice(-1) === ".") {
             return;
         }
 
@@ -123,8 +170,10 @@ function executaCalculadora() {
             valorAtual = limpar(tecla);
 
         } else if(tecla==="=") {
-            ehResultado = true;
             valorAtual = calcular();
+            if (!temErro) {
+                ehResultado = true;
+            }
 
         } else {
             if(ehResultado) {
@@ -148,6 +197,7 @@ function executaCalculadora() {
         console.log("valorAtual:",valorAtual)
         console.log("ehResultado=",ehResultado)
         console.log("tecla:",tecla)
+        console.log("temErro=",temErro)
 
         atualizar();
     });
