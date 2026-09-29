@@ -2,7 +2,7 @@
 var gasolinaAtual = 100;
 
 var intensidade = 1;
-var gasto = 1;
+var gasto = 0.5;
 
 var velocidade = 1;
 
