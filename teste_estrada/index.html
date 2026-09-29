@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Carro</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="../jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+
+    <body>
+        <header>
+            <div class="cabeca" id="topo">
+                <button class="botao-abastecer" id="botao-reiniciar">Reiniciar</button>
+                <button class="botao-abastecer" id="botao-abastecer">Abastecer</button>
+                <button class="botao-turbo" id="botao-turbo">Turbo</button>
+                <span class="texto-turbo" id="texto-turbo">Modo turbo está <span class="texto-ativo">ATIVO</span>!</span>
+            </div>
+        </header>
+
+        <div class="pagina" id="corpo">
+
+            <div class="estrada" id="estrada">
+                <img class="img1-estrada" src="../img/estrada.jpg">
+                <img class="img2-estrada" src="../img/estrada.jpg">
+
+                <img class="carro" id="carro" src="../img/carro.png">
+            </div>
+
+            <div class="gasolina" id="gasolina">
+                <div class="fundo-barra">
+                    <div class="barra" id="barra"></div>
+                </div>
+                <span">Gasolina</span>
+            </div>
+
+        </div>
+    </body>
+
+</html>
+
+<script src="script.js"></script>
