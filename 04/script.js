@@ -217,7 +217,9 @@ function atualizarGasolina() {
     var nova = (gasolinaAtual / gasolinaMax) * 100;
     $("#barra").css("width", nova + "%");
 
-    if(nova === 0 && !quebrado) {
+    console.log("nova gasolina=",nova)
+
+    if(nova <= 0) {
         Swal.fire({
             title: "Gasolina acabou",
             text: "Vá abastecer com urgência!",
