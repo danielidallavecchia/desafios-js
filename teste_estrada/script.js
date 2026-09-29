@@ -1,4 +1,170 @@
 
+var gasolinaAtual = 100;
+
+var intensidade = 1;
+var gasto = 1;
+
+var velocidade = 1;
+
+var $carro = $("#carro");
+
+// qtd de px para avançar
+var pixels = 10;
+
+// estado do carro
+var quebrado = false;
+
+// variáveis usadas na rotação do carro
+var rotacao = 0; // em graus
+var direcao = "direita"; // ultima direção
+var espelho = 1; // 1 (mantém) ou -1 (inverte) no scaleX do css
+
+// Processa cada tecla pressionada
+window.addEventListener('keydown', (event) => {
+    if(quebrado) {;
+        return
+    };
+
+    var topoAtual = parseInt($carro.css("top")) || 0;
+    var leftAtual = parseInt($carro.css("left")) || 0;
+
+    var leftProximo=leftAtual;
+    var topoProximo=topoAtual;
+
+    if (event.key === "ArrowUp") {
+        topoProximo -= pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao -= 90;
+        } else if (direcao === "cima") {
+            // mantém
+        } else if (direcao === "esquerda") {
+            rotacao += 90;
+        } else if (direcao === "baixo") {
+            rotacao -= 0;
+            if (espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        }
+
+        direcao = "cima";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowDown") {
+        topoProximo += pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao += 90;
+        } else if (direcao === "cima") {
+            rotacao += 0;
+            if (espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        } else if (direcao === "esquerda") {
+            rotacao -= 90;
+        } else if (direcao === "baixo") {
+            // mantém
+        }
+
+        direcao = "baixo";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowLeft") {
+        leftProximo -= pixels * velocidade;
+
+        if (direcao === "direita") {
+            rotacao += 0;
+            if(espelho === 1) {
+                espelho = -1;
+            } else {
+                espelho = 1;
+            }
+        } else if (direcao === "cima") {
+            rotacao -= 90;
+        } else if (direcao === "esquerda") {
+            // mantém
+        } else if (direcao === "baixo") {
+            rotacao += 90;
+        }
+
+        direcao = "esquerda";
+        atualizarGasolina();
+
+    } else if (event.key === "ArrowRight") {
+        leftProximo += pixels * velocidade;
+
+        if (direcao === "direita") {
+            // mantém
+        } else if (direcao === "cima") {
+            rotacao += 90;
+        } else if (direcao === "esquerda") {
+            rotacao += 0;
+            if(espelho === -1) {
+                espelho = 1;
+            } else {
+                espelho = -1;
+            }
+        } else if (direcao === "baixo") {
+            rotacao -= 90;
+        }
+
+        direcao = "direita";
+        atualizarGasolina();
+
+    } 
+
+    var $pagina = $("#estrada");
+
+    var larguraCarro = $carro.outerWidth();
+    var alturaCarro = $carro.outerHeight();
+
+    if (rotacao===90 || rotacao===-90) {
+        var temp = larguraCarro;
+        larguraCarro = alturaCarro;
+        alturaCarro = temp;
+    }
+
+    var ajusteX = (larguraCarro - $carro.width()) / 2;
+    var ajusteY = (alturaCarro - $carro.height()) / 2;
+
+    var limiteMinimoX = ajusteX;
+    var limiteMaximoX = $pagina.width() - $carro.width() - ajusteX;
+    var limiteMinimoY = ajusteY;
+    var limiteMaximoY = $pagina.height() - $carro.height() - ajusteY;
+
+    if (leftProximo < limiteMinimoX) {
+        leftProximo = limiteMinimoX;
+    } else if (leftProximo > limiteMaximoX) {
+        leftProximo = limiteMaximoX;
+    }
+    
+    if (topoProximo < limiteMinimoY) {
+        topoProximo = limiteMinimoY;
+    } else if (topoProximo > limiteMaximoY) {
+        topoProximo = limiteMaximoY;
+    }
+
+    if (leftProximo===limiteMinimoX || leftProximo===limiteMaximoX 
+        || topoProximo===limiteMinimoY || topoProximo===limiteMaximoY) {
+        $carro.css("left", leftProximo + "px");
+        $carro.css("top", topoProximo + "px");
+        $carro.css("rotate", rotacao);
+
+        batida();
+        return;
+    }
+
+    $carro.css("left", leftProximo + "px");
+    $carro.css("top", topoProximo + "px");
+    $carro.css("transform", "rotate(" + rotacao + "deg) scaleX(" + espelho + ")");
+
+});
+
+// Processa modo turbo (aumenta velocidade mas gasta mais gasolina)
 var modoTurbo = false;
 
 document.getElementById("botao-turbo").addEventListener("click", function(event) {
@@ -9,68 +175,96 @@ document.getElementById("botao-turbo").addEventListener("click", function(event)
     if(modoTurbo) {
         $texto.show();
         $("#botao-turbo").addClass("botao-turbo-on");
+        intensidade = 5;
+        velocidade = 5;
     } else {
         $texto.hide();
         $("#botao-turbo").removeClass("botao-turbo-on");
+        intensidade = 1;
+        velocidade = 1;
     }
 });
 
-var $carro = $("#carro");
-var $estrada = $(".estrada");
-var pixels = 15;
+function resetaPagina() {
+    $carro = $("#carro");
+    $carro.attr("src", "../img/carro.jpg");
+    gasolinaAtual = 100;
+    intensidade = 1;
+    velocidade = 1;
+    window.location.reload();
+}
 
-window.addEventListener('keydown', (event) => {
-    var topo = parseInt($carro.css("top")) || 0;
-    var left = parseInt($carro.css("left")) || 0;
-    var rotacao = "0";
-    var virar = "1";
+var gasolinaMax=100;
 
-    var larguraEstrada = $estrada.width();
-    var alturaEstrada = $estrada.height();
-    var larguraCarro = $carro.outerWidth();
-    var alturaCarro = $carro.outerHeight();
+// Atualiza a gasolina do carro
+function atualizarGasolina() {
+    if(gasolinaAtual > 100) gasolinaAtual = 100;
 
-    switch(event.key) {
-        case "ArrowUp":
-            if (topo - pixels >= 0) {
-                topo -= pixels;
-            } else {
-                topo = 0; // Trava no topo
-            }
-            rotacao = "270";
-            break;
-        case "ArrowDown":
-            if (topo + alturaCarro + pixels <= alturaEstrada) {
-                topo += pixels;
-            } else {
-                topo = alturaEstrada - alturaCarro; // Trava no fundo
-            }
-            rotacao = "90";
-            break;
-        case "ArrowLeft":
-            if (left - pixels >= 0) {
-                left -= pixels;
-            } else {
-                left = 0; // Trava na esquerda
-            }
-            rotacao = "180";
-            virar = "scaleX(-1)";
-            break;
-        case "ArrowRight":
-            if (left + larguraCarro + pixels <= larguraEstrada) {
-                left += pixels;
-            } else {
-                left = larguraEstrada - larguraCarro; // Trava na direita
-            }
-            rotacao = "0";
-            virar = "scaleX(1)";
-            break;
-    }   
+    gasolinaAtual -= gasto*intensidade;
 
-    $carro.css("left", left + "px");
-    $carro.css("top", topo + "px");
-    $carro.css("rotate", rotacao + "deg");
+    var nova = (gasolinaAtual / gasolinaMax) * 100;
+    $("#barra").css("width", nova + "%");
 
-    event.preventDefault();
+
+    console.log("nova=",nova)
+
+    if(nova <= 0) {
+        Swal.fire({
+            title: "Gasolina acabou",
+            text: "Vá abastecer com urgência!",
+            icon: "info",
+            customClass: {
+                popup: "alerta-gasolina"
+            },
+            confirmButtonText: "Ok, abasteça agora"
+        }).then((result) => {
+            resetaPagina();
+        });
+    }
+}
+
+// Processa o "abastecimento" (enche a gasolina mantendo a posição)
+document.getElementById("botao-abastecer").addEventListener("click", function(event) {
+    if(quebrado) return;
+
+    if(gasolinaAtual === 100) {
+        Swal.fire({
+            title: "Gasolina cheia",
+            text: "Seu tanque já está cheio!",
+            icon: "success",
+            customClass: {
+                popup: "alerta-ok"
+            },
+            confirmButtonText: "Ok"
+        });
+    } else {
+        gasolinaAtual = 100;
+        $("#barra").css("width", "100%");
+    }    
 });
 
+// Processa a batida do carro na borda
+function batida() {
+    quebrado = true;
+    $carro = $("#carro");
+    $carro.attr("src", "../img/explosao.png");
+
+    setTimeout(() => {
+        Swal.fire({
+            title: "Acidente",
+            text: "Você bateu na borda!",
+            icon: "error",
+            customClass: {
+                popup: "alerta-batida"
+            },
+            confirmButtonText: "Ok"
+        }).then((result) => {
+            resetaPagina();
+        });
+    }, 500);
+}
+
+// Botão reiniciar recarrega a página
+document.getElementById("botao-reiniciar").addEventListener("click", function(event) {
+    resetaPagina();
+});
