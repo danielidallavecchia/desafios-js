@@ -1,4 +1,4 @@
-// Métodos úteis: includes, replace, split
+// Métodos úteis: replace, split, slice
 
 var valorAtual = ""; 
 var $resposta = $("#resposta");
@@ -19,9 +19,9 @@ function limpaZeros() {
 function ajustaFonte() {
     var tamanho = "80px"; // padrão
     
-    if (valorAtual.length > 12) {
+    if (valorAtual.length > 9) {
         tamanho = "50px";
-    } else if (valorAtual.length > 8) {
+    } else if (valorAtual.length > 6) {
         tamanho = "60px";
     }
 
@@ -217,6 +217,55 @@ function validaPrimeiraTecla(tecla) {
     return true;
 }
 
+function inverteSinal() {
+    if(!validaUltimoDigito(valorAtual)) {
+        return valorAtual; // não sobrescreve
+    }
+
+    var partes = valorAtual.split(/[%÷x\-+]/); // separa por operadores
+    var ultimaParte = partes[partes.length - 1]; // ultimo
+
+    if (ultimaParte==="") {
+        return valorAtual;    
+    }
+
+    var antes = valorAtual.slice(0, valorAtual.length-ultimaParte.length); // expressao antes do ultimo numero
+
+    var ultimo = antes.slice(-1); // caractere antes do ultimo numero
+    var penultimo = antes.slice(-2, -1); // caracter antes do acima
+
+    // console.log("ultimaParte=",ultimaParte)
+    // console.log("antes=",antes)
+    // console.log("ultimo=",ultimo)
+    // console.log("penultimo=",penultimo)
+
+    if(antes==="") {
+        // adiciona negativo
+        antes = "-";
+
+    } else if (ultimo==="+") {
+        // troca para negativo
+        antes = antes.slice(0, -1) + "-";
+
+    } else if(ultimo==="-") {
+        // se ja tiver um "-"
+        if(antes.length === 1 || operadores.includes(penultimo)) {
+            // remove o "-"
+            antes = String(antes.slice(0, -1));
+        } else {
+            // adiciona o "+"
+            antes = String(antes.slice(0, -1) + "+");
+        }
+    } else {
+        antes = antes + "-";
+    }
+
+    // console.log("2 antes=",antes)
+
+    valorAtual = antes + ultimaParte;
+    return valorAtual;
+}
+
 function executaCalculadora() {
     
     $(".tecla").click(function() {
@@ -254,6 +303,8 @@ function executaCalculadora() {
                 ehResultado = true;
             }
 
+        } else if(tecla === "+/-") {
+            valorAtual = inverteSinal();
         } else {
             if(ehResultado) {
                 if(operadores.includes(tecla) || tecla===".") {
