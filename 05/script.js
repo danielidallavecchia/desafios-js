@@ -1,3 +1,4 @@
+// Métodos úteis: includes, replace, split
 
 var valorAtual = ""; 
 var $resposta = $("#resposta");
@@ -180,14 +181,25 @@ function executaCalculadora() {
         limpaErro();
 
         var tecla = $(this).text();
+        if (tecla === ",") tecla = ".";
 
         if (!validaPrimeiraTecla(tecla)) {
             return;
         }
 
-        // não permite ponto logo após outro ponto
-        if (tecla === "." && valorAtual.slice(-1) === ".") {
-            return;
+        if (tecla === ".") {
+            var partes = valorAtual.split(/[%÷x\-+]/);
+            var ultimaPrte = partes[partes.length - 1];
+            // valorAtual.slice(-1) === "."
+
+            // não permite ponto se já tiver um
+            if (ultimaPrte.includes(".")) {
+                return;
+            }
+
+            if (ultimaPrte === "" && !ehResultado) {
+                tecla = "0.";
+            }
         }
 
         if(tecla==="AC" || tecla==="C") {
