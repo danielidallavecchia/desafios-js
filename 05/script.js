@@ -20,9 +20,9 @@ function ajustaFonte() {
     var tamanho = "80px"; // padrão
     
     if (valorAtual.length > 12) {
-        tamanho = "40px";
-    } else if (valorAtual.length > 8) {
         tamanho = "50px";
+    } else if (valorAtual.length > 8) {
+        tamanho = "60px";
     }
 
     $resposta.css("font-size", tamanho);
@@ -42,28 +42,70 @@ function limpaErro() {
     $msgErro.text("Expressão mal formatada");
 }
 
-function limitaTamanho() {
-    if(!ehResultado && valorAtual.length > 15) {
-        mostraErro("Máximo permitido são 15 caracteres");
-    }
-    if(valorAtual.length > 15) {
-        valorAtual = valorAtual.slice(0,15);
-    }
-}
-
 function ajustaPonto() {
     if(valorAtual===".") {
         valorAtual = "0.";
     }
 }
 
+function formataNumero(numero) {
+    var partes = numero.split(",");
+    var inteiro = partes[0];
+    var decimal = partes[1]; 
+
+    if(Number.isNaN(inteiro)) { // se nao é um numero, ex:infinity
+        return numero;
+    }
+
+    var respFinal = "";
+    var j = 0;
+
+    for(var i=inteiro.length-1; i>=0; i--) {
+        respFinal = inteiro[i] + respFinal;
+        j++;
+
+        // a cada 3 dígitos, coloca um ponto
+        if(j%3 == 0 && i>0) {
+            respFinal = "." + respFinal;
+        }
+    }
+
+    if (decimal !== undefined) {
+        respFinal = respFinal + "," + decimal;
+    }
+
+    return respFinal;
+}
+
+function formataSaida(resp) {
+    console.log("resp=",resp);
+
+    resp = resp.replace(".", ","); // troca ponto por vírgula pra exibir
+
+    if(resp.length <= 3) {
+        return resp;
+    }
+
+    var respFinal = "";
+    var pedacos = resp.split(/([%÷x+\-])/);
+
+    for (var i=0; i<pedacos.length; i++) {
+        pedacos[i] = formataNumero(pedacos[i]);
+
+        respFinal = respFinal + pedacos[i];
+    }
+
+    console.log("respFinal=",respFinal);
+
+    return respFinal;
+}
+
 function atualizar() {
     limpaZeros();
     ajustaFonte();
-    limitaTamanho();
     ajustaPonto();
 
-    $resposta.text(valorAtual.replace(/\./g, ","));
+    $resposta.text(formataSaida(valorAtual));
 
     var $del = $("#ac");
     if(valorAtual!="0") {
@@ -149,6 +191,7 @@ function calcular() {
 
     try {
         calculo = eval(expressao);   
+        console.log("=>calculo=", calculo)
         // padroniza decimal com 12 casas e no parse remove zeros a direita após o ponto
         return String(parseFloat(calculo.toPrecision(12)));
     } catch (erro) {
