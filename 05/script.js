@@ -11,7 +11,7 @@ function limpaZeros() {
     if (valorAtual === "") valorAtual = "0";
 
     // remove zero a esquerda exceto antes de ponto decimal
-    if (valorAtual.length > 1 && valorAtual[0] === "0" && valorAtual[1] !== ".") {
+    if (valorAtual.length > 1 && valorAtual[0] === "0" && valorAtual[1] !== "." && !operadores.includes(valorAtual[1])) {
         valorAtual = valorAtual.slice(1);
     }
 }
@@ -192,7 +192,12 @@ function calcular() {
         calculo = eval(expressao);   
         console.log("=>expressao=", expressao)
         console.log("=>calculo=", calculo)
-        return String(calculo); //parseFloat(calculo.toPrecision(12)));
+
+        if (!Number.isFinite(calculo)) {
+            return String(calculo); // Infinity, -Infinity, NaN
+        }
+
+        return String(parseFloat(calculo.toPrecision(15))); // se ultrapssar, usa notação
     } catch (erro) {
         mostraErro("Expressão mal formatada");
         return valorAtual;
@@ -204,13 +209,10 @@ function ehInicio() {
 }
 
 function validaPrimeiraTecla(tecla) {
-    if(valorAtual==="" || valorAtual==="0") {
-        return true;
-    }
+    var invalidoNoInicio = ["÷", "x", "=", "+", "-"];
 
-    var invalidoNoInicio = ["%", "÷", "x", "="];
     if (ehInicio() && invalidoNoInicio.includes(tecla)) {
-        mostraErro("Expressão mal formatada");
+        // se for no inicio ignora sem digitar nada e sem mostrar erro
         return false;
     }
     return true;
@@ -272,6 +274,14 @@ function processaTecla(tecla) {
     if (tecla === ",") tecla = ".";
 
     if (!validaPrimeiraTecla(tecla)) {
+        return;
+    }
+
+    if (tecla === "%" && ehInicio()) {
+        valorAtual = "0"; // pra resultar em "0%"
+    }
+
+    if (operadores.includes(tecla) && valorAtual.slice(-1) === ".") { // não permite operador depois de um ponto
         return;
     }
 
