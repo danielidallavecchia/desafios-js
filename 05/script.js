@@ -1,7 +1,7 @@
 // Métodos úteis: replace, split, slice
 
 var valorAtual = ""; 
-var $resposta = $("#resposta");
+var $resposta = $("#valor");
 var ehResultado = false;
 var temErro = false; // true enquanto houver mensagem no #msg-erro
 
@@ -78,8 +78,6 @@ function formataNumero(numero) {
 }
 
 function formataSaida(resp) {
-    console.log("resp=",resp);
-
     resp = resp.replace(/\./g, ",");  // troca ponto por vírgula pra exibir
 
     if(resp.length <= 3) {
@@ -95,8 +93,6 @@ function formataSaida(resp) {
         respFinal = respFinal + pedacos[i];
     }
 
-    console.log("respFinal=",respFinal);
-
     return respFinal;
 }
 
@@ -106,6 +102,9 @@ function atualizar() {
     ajustaPonto();
 
     $resposta.text(formataSaida(valorAtual));
+
+    var posicaoAtual = $resposta[0].scrollWidth;
+    $resposta.scrollLeft(posicaoAtual); 
 
     var $del = $("#ac");
     if(valorAtual!="0") {
@@ -191,9 +190,9 @@ function calcular() {
 
     try {
         calculo = eval(expressao);   
+        console.log("=>expressao=", expressao)
         console.log("=>calculo=", calculo)
-        // padroniza decimal com 12 casas e no parse remove zeros a direita após o ponto
-        return String(parseFloat(calculo.toPrecision(12)));
+        return String(calculo); //parseFloat(calculo.toPrecision(12)));
     } catch (erro) {
         mostraErro("Expressão mal formatada");
         return valorAtual;

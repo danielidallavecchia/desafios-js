@@ -35,11 +35,10 @@ html, body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow: hidden; 
 }
 
 .resposta {    
-    display: grid;
+    display: flex;
     align-items: flex-end;  
     justify-content: flex-end;
     padding: 20px;
@@ -48,6 +47,20 @@ html, body {
     font-size: 80px;
     height: 32%;
     font-family: "Times New Roman";
+    overflow: hidden;
+}
+
+.valor {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.valor::-webkit-scrollbar {
+    display: none;
 }
 
 .resposta-err {
