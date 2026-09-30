@@ -265,71 +265,98 @@ function inverteSinal() {
     return valorAtual;
 }
 
-function executaCalculadora() {
-    
-    $(".tecla").click(function() {
-        temErro = false;
-        limpaErro();
+function processaTecla(tecla) {
+    temErro = false;
+    limpaErro();
 
-        var tecla = $(this).text();
-        if (tecla === ",") tecla = ".";
+    if (tecla === ",") tecla = ".";
 
-        if (!validaPrimeiraTecla(tecla)) {
+    if (!validaPrimeiraTecla(tecla)) {
+        return;
+    }
+
+    if (tecla === ".") {
+        var partes = valorAtual.split(/[%÷x\-+]/);
+        var ultimaPrte = partes[partes.length - 1];
+        // valorAtual.slice(-1) === "."
+
+        // não permite ponto se já tiver um
+        if (ultimaPrte.includes(".")) {
             return;
         }
 
-        if (tecla === ".") {
-            var partes = valorAtual.split(/[%÷x\-+]/);
-            var ultimaPrte = partes[partes.length - 1];
-            // valorAtual.slice(-1) === "."
+        if (ultimaPrte === "" && !ehResultado) {
+            tecla = "0.";
+        }
+    }
 
-            // não permite ponto se já tiver um
-            if (ultimaPrte.includes(".")) {
-                return;
-            }
+    if(tecla==="AC" || tecla==="C") {
+        valorAtual = limpar(tecla);
 
-            if (ultimaPrte === "" && !ehResultado) {
-                tecla = "0.";
-            }
+    } else if(tecla==="=") {
+        valorAtual = calcular();
+        if (!temErro) {
+            ehResultado = true;
         }
 
-        if(tecla==="AC" || tecla==="C") {
-            valorAtual = limpar(tecla);
-
-        } else if(tecla==="=") {
-            valorAtual = calcular();
-            if (!temErro) {
-                ehResultado = true;
-            }
-
-        } else if(tecla === "+/-") {
-            valorAtual = inverteSinal();
-        } else {
-            if(ehResultado) {
-                if(operadores.includes(tecla) || tecla===".") {
-                    valorAtual = valorAtual + tecla; // concatena
-                } else {
-                    valorAtual = tecla; // sobrescreve
-                }
-                ehResultado = false;
+    } else if(tecla === "+/-") {
+        valorAtual = inverteSinal();
+    } else {
+        if(ehResultado) {
+            if(operadores.includes(tecla) || tecla===".") {
+                valorAtual = valorAtual + tecla; // concatena
             } else {
-                var ultimo = valorAtual.slice(-1);
+                valorAtual = tecla; // sobrescreve
+            }
+            ehResultado = false;
+        } else {
+            var ultimo = valorAtual.slice(-1);
 
-                if(operadores.includes(tecla) && operadores.includes(ultimo) && ultimo!="%") {
-                    valorAtual = valorAtual.slice(0,-1) + tecla; // se for operador sobre operador, substitui
-                } else {
-                    valorAtual = valorAtual + tecla;
-                }
+            if(operadores.includes(tecla) && operadores.includes(ultimo) && ultimo!="%") {
+                valorAtual = valorAtual.slice(0,-1) + tecla; // se for operador sobre operador, substitui
+            } else {
+                valorAtual = valorAtual + tecla;
             }
         }
-       
-        // console.log("valorAtual:",valorAtual)
-        // console.log("ehResultado=",ehResultado)
-        // console.log("tecla:",tecla)
-        // console.log("temErro=",temErro)
+    }
+    
+    // console.log("valorAtual:",valorAtual)
+    // console.log("ehResultado=",ehResultado)
+    // console.log("tecla:",tecla)
+    // console.log("temErro=",temErro)
 
-        atualizar();
+    atualizar();
+}
+
+function executaCalculadora() {
+    $(".tecla").click(function() {
+        var tecla = $(this).text();
+        processaTecla(tecla);
     });
 }
 
 executaCalculadora();
+
+document.addEventListener("keydown", (event) => {
+    var key = event.key;
+
+    if (key === 'Delete') {
+        processaTecla("AC");
+    } else if (key === 'Backspace') {
+        processaTecla("C");
+    } else if (key === 'Enter' || key === "=") {
+        processaTecla("=");
+    } else {
+        var teclasPermitidas = ["0","1","2","3","4","5","6","7","8","9",
+            ",","+","-",".","/","*","%"];
+        
+        if(teclasPermitidas.includes(key)) {
+            if(key==="/") {
+                key= "÷";
+            } else if(key==="*") {
+                key= "x";
+            }
+            processaTecla(key);
+        }
+    }
+});
