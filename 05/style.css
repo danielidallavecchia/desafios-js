@@ -18,7 +18,7 @@ html, body {
 }
 
 .fundo {
-    width: 360px;
+    width: 345px;
     height: 670px;
     background-color: rgb(2, 43, 73);
     border-radius: 55px;
@@ -28,7 +28,7 @@ html, body {
 }
 
 .tela {
-    width: 350px;
+    width: 335px;
     height: 665px;
     background-color: black;
     border-radius: 50px;
@@ -64,8 +64,8 @@ html, body {
 .teclado {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 8px;
-    padding: 5px 10px 0px 15px;
+    gap: 5px;
+    padding: 5px 20px 0px 25px;
     height: 53%;
     justify-content: center;
     align-items: center;
@@ -81,25 +81,25 @@ html, body {
 }
 
 .botao-cinza { 
-    background-color: rgb(143, 141, 141); 
+    background-color: rgb(86, 86, 86); 
     color: black !important; 
 }
 .botao-cinza:hover {
-    background-color: rgb(106, 105, 105); 
+    background-color: rgb(59, 58, 58); 
 }
 
 .botao-cinzaescuro { 
-    background-color: rgb(31, 31, 31); 
+    background-color: rgb(29, 28, 28); 
 }
 .botao-cinzaescuro:hover { 
-    background-color: rgb(20, 20, 20); 
+    background-color: rgb(16, 16, 16); 
 }
 
 .botao-amarelo { 
-    background-color: rgb(207, 130, 13); 
+    background-color: rgb(159, 96, 2); 
 }
 .botao-amarelo:hover { 
-    background-color: rgb(141, 92, 18); 
+    background-color: rgb(114, 69, 1); 
 }
 
 .botao-zero {
@@ -130,6 +130,20 @@ html, body {
     width: 13px;
     height: 13px;
     border-radius: 50%;
+}
+
+.barra-celular {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+.barra-celular img {
+    width: 15px;
+    height: 15px;
 }
 
 .barra-inferior {
