@@ -80,7 +80,7 @@ function formataNumero(numero) {
 function formataSaida(resp) {
     console.log("resp=",resp);
 
-    resp = resp.replace(".", ","); // troca ponto por vírgula pra exibir
+    resp = resp.replace(/\./g, ",");  // troca ponto por vírgula pra exibir
 
     if(resp.length <= 3) {
         return resp;
