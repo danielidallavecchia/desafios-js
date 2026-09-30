@@ -62,7 +62,7 @@ function atualizar() {
     limitaTamanho();
     ajustaPonto();
 
-    $resposta.text(valorAtual);
+    $resposta.text(valorAtual.replace(/\./g, ","));
 
     var $del = $("#ac");
     if(valorAtual!="0") {
@@ -80,7 +80,11 @@ function limpar(tecla) {
     } else if (tecla ==="AC") {
         resultado = "0";
     } else if(tecla === "C") {
-        resultado = resultado.slice(0, -1); // remove ultimo elemento
+        if(ehResultado) {
+            resultado = "0";
+        } else {
+            resultado = resultado.slice(0, -1); // remove ultimo elemento
+        }
     }
 
     if(temErro) {
@@ -107,6 +111,27 @@ function validaUltimoDigito(expressao) {
     return true;
 }
 
+function formataOperadores(expressao) {
+    expressao = valorAtual.replace(/x/g, "*");
+    expressao = expressao.replace(/÷/g, "/");
+    return expressao;
+}
+
+function calculaPorcento(expressao) {
+    if(!expressao.includes("%")) {
+        return expressao;
+    }
+
+    // algum valor +- n%
+    expressao = expressao.replace(
+        /(\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)%/g,
+        "$1$2($1*$3/100)"
+    );
+
+    // somente n%
+    return expressao.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+}
+
 function calcular() {
     if(valorAtual==="" || valorAtual==="0") {
         return valorAtual;
@@ -116,9 +141,8 @@ function calcular() {
         return valorAtual; // não sobrescreve
     }
 
-    var expressao = valorAtual.replace(/x/g, "*");
-    expressao = expressao.replace(/÷/g, "/");
-    expressao = expressao.replace(/[%÷x\-+]$/, "");
+    var expressao = formataOperadores(valorAtual);
+    expressao = calculaPorcento(expressao);
 
     var calculo=0;
 
@@ -186,7 +210,7 @@ function executaCalculadora() {
             } else {
                 var ultimo = valorAtual.slice(-1);
 
-                if(operadores.includes(tecla) && operadores.includes(ultimo)) {
+                if(operadores.includes(tecla) && operadores.includes(ultimo) && ultimo!="%") {
                     valorAtual = valorAtual.slice(0,-1) + tecla; // se for operador sobre operador, substitui
                 } else {
                     valorAtual = valorAtual + tecla;
@@ -194,10 +218,10 @@ function executaCalculadora() {
             }
         }
        
-        console.log("valorAtual:",valorAtual)
-        console.log("ehResultado=",ehResultado)
-        console.log("tecla:",tecla)
-        console.log("temErro=",temErro)
+        // console.log("valorAtual:",valorAtual)
+        // console.log("ehResultado=",ehResultado)
+        // console.log("tecla:",tecla)
+        // console.log("temErro=",temErro)
 
         atualizar();
     });
