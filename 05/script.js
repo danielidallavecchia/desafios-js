@@ -199,7 +199,7 @@ function calcular() {
             return String(calculo); // Infinity, -Infinity, NaN
         }
 
-        return String(parseFloat(calculo.toPrecision(15))); // se ultrapssar, usa notação
+        return String(parseFloat(calculo.toPrecision(9))); // se ultrapssar, usa notação
     } catch (erro) {
         mostraErro("Expressão mal formatada");
         return valorAtual;
