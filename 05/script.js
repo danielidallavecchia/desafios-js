@@ -210,13 +210,18 @@ function ehInicio() {
     return valorAtual === "" || valorAtual === "0";
 }
 
-function validaPrimeiraTecla(tecla) {
+function validaTecla(tecla) {
     var invalidoNoInicio = ["÷", "x", "=", "+", "-"];
 
     if (ehInicio() && invalidoNoInicio.includes(tecla)) {
-        // se for no inicio ignora sem digitar nada e sem mostrar erro
-        return false;
+        return false; // se for no inicio ignora sem digitar nada e sem mostrar erro
     }
+
+    var ultimoDigito = valorAtual.slice(-1);
+    if(tecla==="%" && ultimoDigito==="%") {
+        return false; // não permite informar dois % sequidos
+    }
+
     return true;
 }
 
@@ -276,7 +281,7 @@ function processaTecla(tecla) {
 
     if (tecla === ",") tecla = ".";
 
-    if (!validaPrimeiraTecla(tecla)) {
+    if (!validaTecla(tecla)) {
         return;
     }
 
@@ -386,6 +391,7 @@ document.getElementById("img-historico").addEventListener("click", function(even
 
     $imgLimpar.toggle();
     $imgTexto.toggle();
+    $imgTexto.scrollTop($imgTexto[0].scrollHeight);
 });
 
 document.addEventListener("keydown", function(event) {
