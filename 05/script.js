@@ -27,6 +27,18 @@ function ajustaFonte() {
         tamanho = "60px";
     }
 
+    if (ehResultado) {
+        if (valorAtual.length >= 20) {
+            tamanho = "22px";
+        } else if (valorAtual.length >= 13) {
+            tamanho = "24.5px";
+        } else if (valorAtual.length >= 11) {
+            tamanho = "35px";
+        } else if(valorAtual.length >= 8) {
+            tamanho = "50px";
+        }
+    }
+    
     $resposta.css("font-size", tamanho);
 }
 
@@ -50,12 +62,21 @@ function ajustaPonto() {
     }
 }
 
+function ehZerado(valor) {
+    // true se valor contem somente zeros
+   return /^0+$/.test(valor);
+}
+
 function formataNumero(numero) {
     var partes = numero.split(",");
     var inteiro = partes[0];
     var decimal = partes[1]; 
 
     if(Number.isNaN(inteiro)) { // se nao é um numero, ex:infinity
+        return numero;
+    }
+
+    if(ehZerado(inteiro)) {
         return numero;
     }
 
@@ -187,6 +208,7 @@ function calcular() {
 
     var expressao = formataOperadores(valorAtual);
     expressao = calculaPorcento(expressao);
+    expressao = expressao.replace(/(?<![\d.])0+(?=\d)/g, ""); // remove zeros a esquerda antes da parte decimal
 
     var calculo=0;
 
@@ -196,10 +218,12 @@ function calcular() {
         console.log("=>calculo=", calculo)
 
         if (!Number.isFinite(calculo)) {
-            return String(calculo); // Infinity, -Infinity, NaN
+            // return String(calculo); // Infinity, -Infinity, NaN
+            mostraErro("Expressão mal formatada");
+            return valorAtual;
         }
 
-        return String(parseFloat(calculo.toPrecision(9))); // se ultrapssar, usa notação
+        return String(parseFloat(calculo.toPrecision(10))); // se ultrapssar, usa notação
     } catch (erro) {
         mostraErro("Expressão mal formatada");
         return valorAtual;
@@ -275,7 +299,6 @@ function inverteSinal() {
 }
 
 function processaTecla(tecla) {
-    console.log("TECLA=",tecla)
     temErro = false;
     limpaErro();
 
