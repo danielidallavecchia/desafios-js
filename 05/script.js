@@ -19,15 +19,28 @@ function limpaZeros() {
 }
 
 function ajustaFonte() {
-    var tamanho = "80px"; // padrão
+    var tamanhoFonte = "80px"; // padrão
+    var tamanho = formataSaida(valorAtual).length; // tamanho do texto final exibido
     
-    if (valorAtual.length > 9) {
-        tamanho = "50px";
-    } else if (valorAtual.length > 6) {
-        tamanho = "60px";
+    if (tamanho > 12) {
+        tamanhoFonte = "50px";
+    } else if (tamanho > 9) {
+        tamanhoFonte = "60px";
     }
 
-    $resposta.css("font-size", tamanho);
+    if (ehResultado) {
+        if (tamanho >= 20) {
+            tamanhoFonte = "22px";
+        } else if (tamanho >= 16) {
+            tamanhoFonte = "25px";
+        } else if (tamanho >= 13) {
+            tamanhoFonte = "35px";
+        } else if(tamanho >= 8) {
+            tamanhoFonte = "50px";
+        }
+    }
+
+    $resposta.css("font-size", tamanhoFonte);
 }
 
 function mostraErro(texto) {
@@ -50,12 +63,18 @@ function ajustaPonto() {
     }
 }
 
+function ehZerado(valor) {
+    // true se valor contem somente zeros
+   return /^0+$/.test(valor);
+}
+
 function formataNumero(numero) {
     var partes = numero.split(",");
     var inteiro = partes[0];
     var decimal = partes[1]; 
 
-    if(Number.isNaN(inteiro)) { // se nao é um numero, ex:infinity
+    if(Number.isNaN(inteiro) || ehZerado(inteiro) || numero.includes("e")) {
+        // se não é um numero ou se contem somente zeros ou se é representado em notacao cientifica
         return numero;
     }
 
@@ -87,7 +106,9 @@ function formataSaida(resp) {
     }
 
     var respFinal = "";
-    var pedacos = resp.split(/([%÷x+\-])/);
+
+    // separa por operadores ou 'e' (pra expressão com notação cientifica)
+    var pedacos = resp.split(/(?<!e)([%÷x+\-])/);
 
     for (var i=0; i<pedacos.length; i++) {
         pedacos[i] = formataNumero(pedacos[i]);
@@ -166,14 +187,16 @@ function calculaPorcento(expressao) {
         return expressao;
     }
 
+    var num = "(\\d+(?:\\.\\d+)?(?:e[+-]?\\d+)?)"; // número normal ou em notação (com e)
+
     // algum valor +- n%
     expressao = expressao.replace(
-        /(\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)%/g,
+        new RegExp(num + "\\s*([+-])\\s*" + num + "%", "g"),
         "$1$2($1*$3/100)"
     );
 
     // somente n%
-    return expressao.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+    return expressao.replace(new RegExp(num + "%", "g"), "($1/100)");
 }
 
 function calcular() {
@@ -187,6 +210,7 @@ function calcular() {
 
     var expressao = formataOperadores(valorAtual);
     expressao = calculaPorcento(expressao);
+    expressao = expressao.replace(/(?<![\d.])0+(?=\d)/g, ""); // remove zeros a esquerda antes da parte decimal
 
     var calculo=0;
 
@@ -196,10 +220,12 @@ function calcular() {
         console.log("=>calculo=", calculo)
 
         if (!Number.isFinite(calculo)) {
-            return String(calculo); // Infinity, -Infinity, NaN
+            // return String(calculo); // Infinity, -Infinity, NaN
+            mostraErro("Expressão mal formatada");
+            return valorAtual;
         }
 
-        return String(parseFloat(calculo.toPrecision(9))); // se ultrapssar, usa notação
+        return String(parseFloat(calculo.toPrecision(10))); // se ultrapssar, usa notação
     } catch (erro) {
         mostraErro("Expressão mal formatada");
         return valorAtual;
@@ -230,7 +256,7 @@ function inverteSinal() {
         return valorAtual; // não sobrescreve
     }
 
-    var partes = valorAtual.split(/[÷x\-+]/); // separa por operadores
+    var partes = valorAtual.split(/(?<!e)[÷x\-+]/);// separa por operadores ou notação
     var ultimaParte = partes[partes.length - 1]; // ultimo
 
     if (ultimaParte==="") {
@@ -275,7 +301,6 @@ function inverteSinal() {
 }
 
 function processaTecla(tecla) {
-    console.log("TECLA=",tecla)
     temErro = false;
     limpaErro();
 
@@ -294,7 +319,8 @@ function processaTecla(tecla) {
     }
 
     if (tecla === ".") {
-        var partes = valorAtual.split(/[%÷x\-+]/);
+        var partes = valorAtual.split(/(?<!e)[%÷x\-+]/);
+
         var ultimaPrte = partes[partes.length - 1];
         // valorAtual.slice(-1) === "."
 
