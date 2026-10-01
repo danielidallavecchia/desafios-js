@@ -19,27 +19,28 @@ function limpaZeros() {
 }
 
 function ajustaFonte() {
-    var tamanho = "80px"; // padrão
+    var tamanhoFonte = "80px"; // padrão
+    var tamanho = formataSaida(valorAtual).length; // tamanho do texto final exibido
     
-    if (valorAtual.length > 9) {
-        tamanho = "50px";
-    } else if (valorAtual.length > 6) {
-        tamanho = "60px";
+    if (tamanho > 12) {
+        tamanhoFonte = "50px";
+    } else if (tamanho > 9) {
+        tamanhoFonte = "60px";
     }
 
     if (ehResultado) {
-        if (valorAtual.length >= 20) {
-            tamanho = "22px";
-        } else if (valorAtual.length >= 13) {
-            tamanho = "24.5px";
-        } else if (valorAtual.length >= 11) {
-            tamanho = "35px";
-        } else if(valorAtual.length >= 8) {
-            tamanho = "50px";
+        if (tamanho >= 20) {
+            tamanhoFonte = "22px";
+        } else if (tamanho >= 16) {
+            tamanhoFonte = "25px";
+        } else if (tamanho >= 13) {
+            tamanhoFonte = "35px";
+        } else if(tamanho >= 8) {
+            tamanhoFonte = "50px";
         }
     }
-    
-    $resposta.css("font-size", tamanho);
+
+    $resposta.css("font-size", tamanhoFonte);
 }
 
 function mostraErro(texto) {
@@ -72,11 +73,8 @@ function formataNumero(numero) {
     var inteiro = partes[0];
     var decimal = partes[1]; 
 
-    if(Number.isNaN(inteiro)) { // se nao é um numero, ex:infinity
-        return numero;
-    }
-
-    if(ehZerado(inteiro)) {
+    if(Number.isNaN(inteiro) || ehZerado(inteiro) || numero.includes("e")) {
+        // se não é um numero ou se contem somente zeros ou se é representado em notacao cientifica
         return numero;
     }
 
@@ -108,7 +106,9 @@ function formataSaida(resp) {
     }
 
     var respFinal = "";
-    var pedacos = resp.split(/([%÷x+\-])/);
+
+    // separa por operadores ou 'e' (pra expressão com notação cientifica)
+    var pedacos = resp.split(/(?<!e)([%÷x+\-])/);
 
     for (var i=0; i<pedacos.length; i++) {
         pedacos[i] = formataNumero(pedacos[i]);
@@ -187,14 +187,16 @@ function calculaPorcento(expressao) {
         return expressao;
     }
 
+    var num = "(\\d+(?:\\.\\d+)?(?:e[+-]?\\d+)?)"; // número normal ou em notação (com e)
+
     // algum valor +- n%
     expressao = expressao.replace(
-        /(\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)%/g,
+        new RegExp(num + "\\s*([+-])\\s*" + num + "%", "g"),
         "$1$2($1*$3/100)"
     );
 
     // somente n%
-    return expressao.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+    return expressao.replace(new RegExp(num + "%", "g"), "($1/100)");
 }
 
 function calcular() {
@@ -254,7 +256,7 @@ function inverteSinal() {
         return valorAtual; // não sobrescreve
     }
 
-    var partes = valorAtual.split(/[÷x\-+]/); // separa por operadores
+    var partes = valorAtual.split(/(?<!e)[÷x\-+]/);// separa por operadores ou notação
     var ultimaParte = partes[partes.length - 1]; // ultimo
 
     if (ultimaParte==="") {
@@ -317,7 +319,8 @@ function processaTecla(tecla) {
     }
 
     if (tecla === ".") {
-        var partes = valorAtual.split(/[%÷x\-+]/);
+        var partes = valorAtual.split(/(?<!e)[%÷x\-+]/);
+
         var ultimaPrte = partes[partes.length - 1];
         // valorAtual.slice(-1) === "."
 
