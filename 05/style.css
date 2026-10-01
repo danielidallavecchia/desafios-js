@@ -211,7 +211,6 @@ html, body {
     margin-top: 10px;
     max-height: 70px;
     position: absolute;
-    white-space: nowrap;
 }
 .texto-historico::-webkit-scrollbar {
     display: none;
