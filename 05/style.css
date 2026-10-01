@@ -48,6 +48,7 @@ html, body {
     height: 32%;
     font-family: "Times New Roman";
     overflow: hidden;
+    position: relative; 
 }
 
 .valor {
@@ -173,4 +174,45 @@ html, body {
     width: 124px;
     height: 5px;
     border-radius: 10px;
+}
+
+.historico {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    right: 20px;
+    font-size: 13px;
+}
+
+.img-historico {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.img-historico-1 {
+    width: 30px;
+}
+.img-historico-2 {
+    width: 25px;
+    display: none;
+}
+
+.img-historico img:hover {
+    transform: scale(1.1);
+}
+
+.texto-historico {
+    display: none;
+    font-size: 13px;
+    color: lightgray;
+    overflow-y: auto;
+    text-align: left;
+    margin-top: 10px;
+    max-height: 70px;
+    position: absolute;
+    white-space: nowrap;
+}
+.texto-historico::-webkit-scrollbar {
+    display: none;
 }

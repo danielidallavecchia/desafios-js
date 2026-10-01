@@ -7,6 +7,8 @@ var temErro = false; // true enquanto houver mensagem no #msg-erro
 
 var operadores = ["%", "÷", "x", "-", "+"];
 
+var historico = [];
+
 function limpaZeros() {
     if (valorAtual === "") valorAtual = "0";
 
@@ -268,6 +270,7 @@ function inverteSinal() {
 }
 
 function processaTecla(tecla) {
+    console.log("TECLA=",tecla)
     temErro = false;
     limpaErro();
 
@@ -304,9 +307,15 @@ function processaTecla(tecla) {
         valorAtual = limpar(tecla);
 
     } else if(tecla==="=") {
+        var conta = valorAtual;
         valorAtual = calcular();
+
         if (!temErro) {
             ehResultado = true;
+            if (conta != valorAtual) {
+                historico.push(formataSaida(conta) + " = " + formataSaida(valorAtual));
+                atualizarHistorico();
+            }
         }
 
     } else if(tecla === "+/-") {
@@ -345,9 +354,41 @@ function executaCalculadora() {
     });
 }
 
-executaCalculadora();
+function atualizarHistorico() {
+    var $texto = $("#texto-historico");
 
-document.addEventListener("keydown", (event) => {
+    if (historico.length === 0) {
+        $texto.text("Sem histórico disponível");
+        return;
+    }
+
+    if (historico.length > 10) {
+        historico = historico.slice(1, historico.length);
+    }
+
+    var html = "";
+    for(var i=0; i<historico.length; i++) {
+        html += historico[i] + "<br>";
+    }
+    $texto.html(html);
+
+    $texto.scrollTop($texto[0].scrollHeight);
+}
+
+document.getElementById("img-limpar").addEventListener("click", function(event) {
+    historico = [];
+    atualizarHistorico();
+});
+
+document.getElementById("img-historico").addEventListener("click", function(event) {
+    var $imgLimpar = $("#img-limpar");
+    var $imgTexto = $("#texto-historico");
+
+    $imgLimpar.toggle();
+    $imgTexto.toggle();
+});
+
+document.addEventListener("keydown", function(event) {
     var key = event.key;
 
     if (key === 'Delete') {
@@ -370,3 +411,5 @@ document.addEventListener("keydown", (event) => {
         }
     }
 });
+
+executaCalculadora();
