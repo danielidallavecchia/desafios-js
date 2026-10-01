@@ -230,7 +230,7 @@ function inverteSinal() {
         return valorAtual; // não sobrescreve
     }
 
-    var partes = valorAtual.split(/[%÷x\-+]/); // separa por operadores
+    var partes = valorAtual.split(/[÷x\-+]/); // separa por operadores
     var ultimaParte = partes[partes.length - 1]; // ultimo
 
     if (ultimaParte==="") {
